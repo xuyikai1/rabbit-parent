@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="rabbit-api" />
+        <module name="rabbit-common" />
+        <module name="rabbit-core-producer" />
+        <module name="rabbit-task" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="rabbit-task" target="8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="rabbit-api" options="-parameters" />
+      <module name="rabbit-common" options="-parameters" />
+      <module name="rabbit-core-producer" options="-parameters" />
+      <module name="rabbit-task" options="-parameters" />
+    </option>
+  </component>
+</project>
