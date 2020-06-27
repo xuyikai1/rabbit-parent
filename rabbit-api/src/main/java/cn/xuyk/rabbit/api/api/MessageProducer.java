@@ -13,14 +13,6 @@ import java.util.List;
 public interface MessageProducer {
 
     /**
-     * 发送消息 附带SendCallback回调执行响应的业务逻辑处理
-     * @param message
-     * @param sendCallback
-     * @throws MessageRunTimeException
-     */
-    void send(Message message, SendCallback sendCallback) throws MessageRunTimeException;
-
-    /**
      * 发送消息
      * @param message
      * @throws MessageRunTimeException
@@ -33,5 +25,13 @@ public interface MessageProducer {
      * @throws MessageRunTimeException
      */
     void send(List<Message> messages) throws MessageRunTimeException;
+
+    /**
+     * 发送消息 附带SendCallback回调执行响应的业务逻辑处理
+     * @param message
+     * @param sendCallback
+     * @throws MessageRunTimeException
+     */
+    void send(Message message, SendCallback sendCallback) throws MessageRunTimeException;
 
 }

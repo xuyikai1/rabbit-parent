@@ -39,6 +39,7 @@
         <commons-collections.version>3.2.2</commons-collections.version>
         <curator.version>2.11.0</curator.version>
         <hutool.version>5.3.7</hutool.version>
+        <jackson-databind.version>2.11.1</jackson-databind.version>
     </properties>
 
     <!-- 相关依赖 -->
@@ -53,6 +54,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -82,6 +89,13 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons-io.version}</version>
+        </dependency>
+
+        <!--对json格式的支持 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson-databind.version}</version>
         </dependency>
 
     </dependencies>
