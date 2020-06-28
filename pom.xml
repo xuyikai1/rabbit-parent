@@ -30,7 +30,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>8</java.version>
-        <org.codehaus.jackson.version>1.9.13</org.codehaus.jackson.version>
         <druid.version>1.0.24</druid.version>
         <elastic-job.version>2.1.4</elastic-job.version>
         <guava.version>29.0-jre</guava.version>
@@ -39,7 +38,6 @@
         <commons-collections.version>3.2.2</commons-collections.version>
         <curator.version>2.11.0</curator.version>
         <hutool.version>5.3.7</hutool.version>
-        <jackson-databind.version>2.11.1</jackson-databind.version>
     </properties>
 
     <!-- 相关依赖 -->
@@ -62,6 +60,12 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- hutool包 -->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
@@ -95,7 +99,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson-databind.version}</version>
         </dependency>
 
     </dependencies>
