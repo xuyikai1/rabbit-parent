@@ -1,0 +1,96 @@
+server:
+  port: 8001
+  servlet:
+    context-path: /
+
+# rabbitmq地址
+spring:
+  rabbitmq:
+    addresses: 192.168.10.145:5672,192.168.10.146:5672,192.168.10.147:5672
+    username: guest
+    password: guest
+    virtual-host: / # 虚拟主机
+    publisher-confirms: true
+    publisher-returns: true # 设置return消息模式，需要配合template.mandatory为true一起使用
+    template:
+      mandatory: true
+    listener:
+      direct:
+        auto-startup: false
+
+############################################################
+#
+# 配置数据源信息
+#
+############################################################
+  datasource:  # 数据源的相关配置
+    type: com.zaxxer.hikari.HikariDataSource # 数据源类型：HikariCP
+    driver-class-name: com.mysql.cj.jdbc.Driver # mysql驱动
+    url: jdbc:mysql://localhost:3306/broker_message?characterEncoding=utf-8&serverTimezone=GMT%2B8&useSSL=false
+    username: root
+    password: 123456
+    hikari:
+      connection-timeout: 30000 # 等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQ
+      minimum-idle: 5 # 最小连接数
+      maximum-pool-size: 20 # 最大连接数
+      auto-commit: true # 自动提交
+      idle-timeout: 600000 # 连接超时的最大时长（毫秒），超时则被释放（retired），默认:10分钟
+      pool-name: DateSourceHikariCP # 连接池名字
+      max-lifetime: 1800000 # 连接的生命时长（毫秒），超时而且没被使用则被释放（retired），默认:30分钟
+      connection-test-query: SELECT 1
+
+############################################################
+#
+# mybatis 配置
+#
+############################################################
+mybatis:
+  type-aliases-package: cn.xuyk.rabbit.producer.pojo # 所有POJO类所在包路径
+  mapper-locations: classpath:mapper/*.xml # mapper映射文件
+
+############################################################
+#
+# 线程池 配置
+#
+############################################################
+thread:
+  pool:
+    thread-pool-name: rabbitmq_client_async_sender # 线程池名称
+    core-thread-size: 4 # 核心线程数
+    max-thread-size: 8 # 最大线程数
+    keep-alive-time: 60 # 线程池中空闲线程等待工作的超时时间
+    capacity: 10000 # 线程池容量
+
+############################################################
+#
+# xxl-job 配置
+#
+############################################################
+xxl:
+  job:
+    admin:
+      addresses: http://localhost:8899/xxl-job-admin/  #job管理端地址，如果是集群模式通过nginx或者LB的VIP->domain 的访问地址
+    accessToken:    # 管理端的token，没有则空
+    executor:
+      appname: xxl-job-executor-rabbit  #执行器名称，保证在管理端是唯一的
+      ip: 127.0.0.1  #可空，读取物理网卡第一个IP
+      port: 9998  # 调度通道监听端口，建议都在9900~9999之间
+      logpath: E:/Idea Work/billbook/ #c:/tmp/data/applogs/xxl-job-demo1/jobhandler e:/Idea Work/billbook/ # job执行的日志目录
+      logretentiondays: -1   # 日志滚动天数  -1 不限制
+
+############################################################
+#
+# rabbitmq-consumer 配置
+#
+############################################################
+queue:
+  value: queue-1
+  durable: true
+
+exchange:
+  name: exchange-1
+  durable: true
+  type: topic
+  ignoreDeclarationExceptions: true
+
+key: routingKey.*

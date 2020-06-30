@@ -3,10 +3,11 @@
 # web访问端口号 约定：8088 本地静态资源服务器来使用8080端口号
 ############################################################
 server:
-  port: 8080
+  port: 8081
   tomcat:
     uri-encoding: UTF-8
   max-http-header-size: 80KB
+
 ############################################################
 #
 # 配置数据源信息
@@ -28,6 +29,7 @@ spring:
       pool-name: DateSourceHikariCP # 连接池名字
       max-lifetime: 1800000 # 连接的生命时长（毫秒），超时而且没被使用则被释放（retired），默认:30分钟
       connection-test-query: SELECT 1
+
 ############################################################
 #
 # mybatis 配置
@@ -44,8 +46,28 @@ mybatis:
 ############################################################
 thread:
   pool:
-    thread-pool-name: name
-    core-thread-size: 4
-    max-thread-size: 8
-    keep-alive-time: 60
-    capacity: 10000
+    thread-pool-name: rabbitmq_client_async_sender # 线程池名称
+    core-thread-size: 4 # 核心线程数
+    max-thread-size: 8 # 最大线程数
+    keep-alive-time: 60 # 线程池中空闲线程等待工作的超时时间
+    capacity: 10000 # 线程池容量
+
+############################################################
+#
+# xxl-job 配置
+#
+############################################################
+xxl:
+  job:
+    admin:
+      addresses: http://localhost:8899/xxl-job-admin/  #job管理端地址，如果是集群模式通过nginx或者LB的VIP->domain 的访问地址
+    accessToken:    # 管理端的token，没有则空
+    executor:
+      appname: xxl-job-executor-rabbit  #执行器名称，保证在管理端是唯一的
+      ip: 127.0.0.1  #可空，读取物理网卡第一个IP
+      port: 9997  # 调度通道监听端口，建议都在9900~9999之间
+      logpath: E:/Idea Work/billbook/ #c:/tmp/data/applogs/xxl-job-demo1/jobhandler e:/Idea Work/billbook/ # job执行的日志目录
+      logretentiondays: -1   # 日志滚动天数  -1 不限制
+
+logging:
+  config: classpath:logback.xml

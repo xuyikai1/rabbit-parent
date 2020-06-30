@@ -2,9 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.xuyk.rabbit.producer.dao.BrokerMessageDao">
 
-    <update id="updateOne">
-        update broker_message set message = #{message}
-        where message_id = #{messageId}
+    <select id="queryBrokerMessageStatus4Timeout" resultType="cn.xuyk.rabbit.producer.pojo.BrokerMessage">
+        SELECT
+            bm.*
+        FROM
+            broker_message bm
+        WHERE
+            bm.status = #{status}
+        AND sysdate() > bm.next_retry
+    </select>
+
+    <update id="update4TryCount">
+        UPDATE broker_message bm
+        SET bm.try_count = bm.try_count + 1,
+            bm.update_time = #{updateTime}
+        WHERE
+            bm.message_id = #{brokerMessageId}
     </update>
 
 </mapper>

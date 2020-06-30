@@ -1,0 +1,55 @@
+<configuration>
+	<property name="LOG_HOME"   value="logs"/>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern> %date [%thread] %-5level %logger{36}# %M : %L - %message%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="all_file"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+	    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+	        <!-- rollover daily -->
+	        <fileNamePattern>${LOG_HOME}/all-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+	        <!-- each file should be at most 100MB, keep 60 days worth of history, but at most 20GB -->
+	        <maxFileSize>50MB</maxFileSize>
+	        <maxHistory>30</maxHistory>
+	    </rollingPolicy>
+	    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+	        <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+	    </encoder>
+	</appender>
+	<appender name="err_file"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+	    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+	        <!-- rollover daily -->
+	        <fileNamePattern>${LOG_HOME}/err-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+	        <!-- each file should be at most 100MB, keep 60 days worth of history, but at most 20GB -->
+	        <maxFileSize>50MB</maxFileSize>
+	        <maxHistory>30</maxHistory>
+	    </rollingPolicy>
+	    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+	        <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+	    </encoder>
+	</appender>
+	<logger name="org.springframework" level="WARN" />
+	<logger name="org.springframework.transaction" level="WARN" />
+	<logger name="com.mbkj" level="INFO" />
+	<!-- in order to debug some marshalling issues, this needs to be TRACE -->
+	<logger name="org.springframework.web.servlet.mvc" level="INFO" />
+
+	<!-- 打印SQL语句 日志级别设置为DEBUG -->
+	<logger name="cn.xuyk.rabbit.producer.dao" level="DEBUG" />
+
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="all_file" />
+		<appender-ref ref="err_file" />
+	</root>
+
+</configuration>

@@ -1,5 +1,6 @@
 package cn.xuyk.rabbit.producer.broker.container;
 
+import cn.hutool.core.util.StrUtil;
 import cn.xuyk.rabbit.api.common.MessageType;
 import cn.xuyk.rabbit.api.exception.MessageRunTimeException;
 import cn.xuyk.rabbit.api.pojo.Message;
@@ -8,6 +9,9 @@ import cn.xuyk.rabbit.common.convert.RabbitMessageConverter;
 import cn.xuyk.rabbit.common.serializer.Serializer;
 import cn.xuyk.rabbit.common.serializer.SerializerFactory;
 import cn.xuyk.rabbit.common.serializer.impl.JacksonSerializerFactory;
+import cn.xuyk.rabbit.producer.constant.BrokerMessageStatus;
+import cn.xuyk.rabbit.producer.dao.BrokerMessageDao;
+import cn.xuyk.rabbit.producer.pojo.BrokerMessage;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Maps;
@@ -19,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +38,9 @@ import java.util.Map;
 @Slf4j
 @Component
 public class RabbitTemplateContainer implements RabbitTemplate.ConfirmCallback {
+
+	@Autowired
+	private BrokerMessageDao brokerMessageDao;
 
     /**
      * 缓存 map<topic,template>
@@ -79,7 +87,7 @@ public class RabbitTemplateContainer implements RabbitTemplate.ConfirmCallback {
 		GenericMessageConverter gmc = new GenericMessageConverter(serializer);
 		// 装饰者模式
 		RabbitMessageConverter rmc = new RabbitMessageConverter(gmc);
-		newTemplate.setMessageConverter(rmc);
+//		newTemplate.setMessageConverter(rmc);
 
 		// 4.如果消息类型不是迅速消息，都需要设置确认回调
 		String messageType = message.getMessageType();
@@ -100,8 +108,13 @@ public class RabbitTemplateContainer implements RabbitTemplate.ConfirmCallback {
      */
 	@Override
 	public void confirm(CorrelationData correlationData, boolean ack, String cause) {
+		String id = correlationData.getId();
+		if(StrUtil.isBlank(id)){
+			log.error("send message content is empty");
+			return ;
+		}
 		// 	具体的消息应答
-		List<String> strings = splitter.splitToList(correlationData.getId());
+		List<String> strings = splitter.splitToList(id);
 		String messageId = strings.get(0);
 		long sendTime = Long.parseLong(strings.get(1));
 		String messageType = strings.get(2);
@@ -110,12 +123,16 @@ public class RabbitTemplateContainer implements RabbitTemplate.ConfirmCallback {
 			
 			// 	如果当前消息类型为reliant 我们就去数据库查找并进行更新
 			if(MessageType.RELIANT.endsWith(messageType)) {
-//				this.messageStoreService.succuess(messageId);
+				BrokerMessage bm = BrokerMessage.builder()
+						.messageId(messageId)
+						.status(BrokerMessageStatus.SEND_OK.getStatus())
+						.updateTime(new Date()).build();
+				brokerMessageDao.updateByPrimaryKeySelective(bm);
 			}
 			log.info("send message is OK, confirm messageId: {}, sendTime: {}", messageId, sendTime);
 		} else {
 			log.error("send message is Fail, confirm messageId: {}, sendTime: {}", messageId, sendTime);
-			
+			// 队列满了/
 		}
 	}
 

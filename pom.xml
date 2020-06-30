@@ -13,7 +13,8 @@
         <module>rabbit-common</module>
         <module>rabbit-api</module>
         <module>rabbit-core-producer</module>
-        <module>rabbit-task</module>
+        <module>xxl-job-admin</module>
+        <module>rabbit-demo</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -38,6 +39,7 @@
         <commons-collections.version>3.2.2</commons-collections.version>
         <curator.version>2.11.0</curator.version>
         <hutool.version>5.3.7</hutool.version>
+        <mybatis.spring.boot.version>2.1.3</mybatis.spring.boot.version>
     </properties>
 
     <!-- 相关依赖 -->
@@ -63,6 +65,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>${mybatis.spring.boot.version}</version>
         </dependency>
 
         <!-- hutool包 -->

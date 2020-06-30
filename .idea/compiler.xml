@@ -9,19 +9,35 @@
         <module name="rabbit-api" />
         <module name="rabbit-common" />
         <module name="rabbit-core-producer" />
-        <module name="rabbit-task" />
+        <module name="rabbit-demo" />
+        <module name="xxl-job-admin" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="elastic-job" target="8" />
+      <module name="rabbit-consumer" target="8" />
       <module name="rabbit-task" target="8" />
+      <module name="rabbit-task-core" target="8" />
+      <module name="xxl-job-core" target="1.8" />
+      <module name="xxl-job-executor-sample-frameless" target="1.7" />
+      <module name="xxl-job-executor-sample-jboot" target="1.8" />
+      <module name="xxl-job-executor-sample-jfinal" target="1.7" />
+      <module name="xxl-job-executor-sample-nutz" target="1.7" />
+      <module name="xxl-job-executor-sample-spring" target="1.7" />
+      <module name="xxl-job-executor-sample-springboot" target="1.7" />
+      <module name="xxl-job-executor-samples" target="1.7" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="elastic-job" options="-parameters" />
       <module name="rabbit-api" options="-parameters" />
       <module name="rabbit-common" options="-parameters" />
+      <module name="rabbit-consumer" options="-parameters" />
       <module name="rabbit-core-producer" options="-parameters" />
+      <module name="rabbit-demo" options="-parameters" />
       <module name="rabbit-task" options="-parameters" />
+      <module name="rabbit-task-core" options="-parameters" />
     </option>
   </component>
 </project>
