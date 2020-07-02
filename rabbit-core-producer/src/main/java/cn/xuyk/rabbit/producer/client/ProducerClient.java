@@ -5,6 +5,7 @@ import cn.xuyk.rabbit.api.api.SendCallback;
 import cn.xuyk.rabbit.api.common.MessageType;
 import cn.xuyk.rabbit.api.exception.MessageRunTimeException;
 import cn.xuyk.rabbit.api.pojo.Message;
+import cn.xuyk.rabbit.producer.broker.MessageHolder;
 import cn.xuyk.rabbit.producer.broker.RabbitBroker;
 import com.google.common.base.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,12 @@ public class ProducerClient implements MessageProducer {
 
     @Override
     public void send(List<Message> messages) throws MessageRunTimeException {
-
+        messages.forEach( message -> {
+            // 传输迅速消息
+            message.setMessageType(MessageType.RAPID);
+            MessageHolder.add(message);
+        });
+        rabbitBroker.sendMessages();
     }
 
     @Override

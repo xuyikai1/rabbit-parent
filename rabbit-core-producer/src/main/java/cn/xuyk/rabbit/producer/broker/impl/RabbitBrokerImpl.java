@@ -3,9 +3,11 @@ package cn.xuyk.rabbit.producer.broker.impl;
 import cn.hutool.json.JSONUtil;
 import cn.xuyk.rabbit.api.common.MessageType;
 import cn.xuyk.rabbit.api.pojo.Message;
+import cn.xuyk.rabbit.producer.broker.MessageHolder;
 import cn.xuyk.rabbit.producer.broker.RabbitBroker;
 import cn.xuyk.rabbit.producer.broker.container.RabbitTemplateContainer;
 import cn.xuyk.rabbit.producer.broker.queue.AsyncBaseQueue;
+import cn.xuyk.rabbit.producer.broker.queue.MessageHolderAsyncBaseQueue;
 import cn.xuyk.rabbit.producer.constant.BrokerMessageConst;
 import cn.xuyk.rabbit.producer.constant.BrokerMessageStatus;
 import cn.xuyk.rabbit.producer.dao.BrokerMessageDao;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author: Xuyk
@@ -32,6 +35,8 @@ public class RabbitBrokerImpl implements RabbitBroker {
     private RabbitTemplateContainer rabbitTemplateContainer;
     @Autowired
     private AsyncBaseQueue asyncBaseQueue;
+    @Autowired
+    private MessageHolderAsyncBaseQueue messageHolderAsyncBaseQueue;
     @Autowired
     private BrokerMessageDao brokerMessageDao;
 
@@ -92,7 +97,21 @@ public class RabbitBrokerImpl implements RabbitBroker {
 
     @Override
     public void sendMessages() {
-
+        List<Message> messages = MessageHolder.getAndClear();
+        messages.forEach(message -> {
+            messageHolderAsyncBaseQueue.submit(() -> {
+                CorrelationData correlationData =
+                        new CorrelationData(String.format("%s#%s#%s",
+                                message.getMessageId(),
+                                System.currentTimeMillis(),
+                                message.getMessageType()));
+                String topic = message.getTopic();
+                String routingKey = message.getRoutingKey();
+                RabbitTemplate rabbitTemplate = rabbitTemplateContainer.getTemplate(message);
+                rabbitTemplate.convertAndSend(topic, routingKey, message, correlationData);
+                log.info("#RabbitBrokerImpl.sendMessages# send to rabbitmq, messageId: {}", message.getMessageId());
+            });
+        });
     }
 
 }

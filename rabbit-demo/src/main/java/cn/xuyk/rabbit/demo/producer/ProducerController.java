@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -28,26 +30,68 @@ public class ProducerController {
     @Value("${exchange.name}")
     private String exchangeName;
 
+    @Value("${delay.exchange.name}")
+    private String delayExchangeName;
+
     /**
      * 消息ID
      */
-    private AtomicInteger messageId = new AtomicInteger(100);
+    private AtomicInteger messageId = new AtomicInteger(200);
 
     @PostMapping("/produce")
     public String produceMessage(){
-        String uuid = String.valueOf(messageId.incrementAndGet());
+        String messageId = String.valueOf(this.messageId.incrementAndGet());
         Map<String,Object> attributes = new HashMap<>(2);
         attributes.put("name","张三");
         attributes.put("age","18");
 
         Message message =
-                new Message(uuid,exchangeName,"routingKey.demo",attributes,0);
+                new Message(messageId,exchangeName,"routingKey.demo",attributes,0);
         // 发送可靠性消息
         message.setMessageType(MessageType.RELIANT);
         message.setDelayMills(5000);
         producerClient.send(message);
 
-        return "发送成功";
+        return "发送单条消息成功";
     }
+
+    @PostMapping("/produceMessages")
+    public String produceMessages(){
+        List<Message> messages = new ArrayList<Message>();
+
+        for(int i=0;i<3;i++){
+            String messageId = String.valueOf(this.messageId.incrementAndGet());
+            Map<String,Object> attributes = new HashMap<>(2);
+            attributes.put("name","张" + (i+1) + "疯");
+            attributes.put("age",i);
+
+            Message message =
+                    new Message(messageId,exchangeName,"routingKey.demo",attributes,0);
+
+            message.setDelayMills(5000);
+            messages.add(message);
+        }
+
+        producerClient.send(messages);
+
+        return "发送批量消息成功";
+    }
+
+    @PostMapping("/produceDelayMessage")
+    public String produceDelayMessage(){
+        String messageId = String.valueOf(this.messageId.incrementAndGet());
+        Map<String,Object> attributes = new HashMap<>(2);
+        attributes.put("name","张三");
+        attributes.put("age","18");
+
+        Message message =
+                new Message(messageId,delayExchangeName,"delay.demo",attributes,5000);
+        // 发送可靠性消息
+        message.setMessageType(MessageType.RELIANT);
+        producerClient.send(message);
+
+        return "发送单条延迟消息成功";
+    }
+
 
 }

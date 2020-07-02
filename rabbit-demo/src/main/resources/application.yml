@@ -10,15 +10,20 @@ spring:
     username: guest
     password: guest
     virtual-host: / # 虚拟主机
-    publisher-confirms: true
+    publisher-confirms: true # 开启确认消息
     publisher-returns: true # 设置return消息模式，需要配合template.mandatory为true一起使用
     template:
       mandatory: true
     listener:
       direct:
         auto-startup: false
+      simple:
+        acknowledge-mode: manual # 消费端核心配置1：消费端收到消息的签收方式（一般都选择 manual手动签收）
+        concurrency: 1 # 消费端核心配置2：并行数量，并发大根据cpu等配置进行调整，默认设置为1和max为5
+        max-concurrency: 5
 
-############################################################
+
+  ############################################################
 #
 # 配置数据源信息
 #
@@ -83,6 +88,8 @@ xxl:
 # rabbitmq-consumer 配置
 #
 ############################################################
+
+# 常用queue/exchange/routingKey
 queue:
   value: queue-1
   durable: true
@@ -94,3 +101,16 @@ exchange:
   ignoreDeclarationExceptions: true
 
 key: routingKey.*
+
+
+# 延迟消息专用queue/exchange/routingKey
+delay:
+  queue:
+    value: delay-queue
+    durable: true
+  exchange:
+    name: delay-exchange
+    durable: true
+    type: topic
+    ignoreDeclarationExceptions: true
+  key: delay.*

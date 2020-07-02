@@ -87,7 +87,7 @@ public class RabbitTemplateContainer implements RabbitTemplate.ConfirmCallback {
 		GenericMessageConverter gmc = new GenericMessageConverter(serializer);
 		// 装饰者模式
 		RabbitMessageConverter rmc = new RabbitMessageConverter(gmc);
-//		newTemplate.setMessageConverter(rmc);
+		newTemplate.setMessageConverter(rmc);
 
 		// 4.如果消息类型不是迅速消息，都需要设置确认回调
 		String messageType = message.getMessageType();

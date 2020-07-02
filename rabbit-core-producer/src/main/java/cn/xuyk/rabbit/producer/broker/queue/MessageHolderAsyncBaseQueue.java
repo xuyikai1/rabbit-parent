@@ -9,12 +9,12 @@ import java.util.concurrent.*;
 
 /**
  * @Author: Xuyk
- * @Description: 消息-异步队列
+ * @Description: 异步队列 - 专门发送批量消息的线程池
  * @Date: 2020/6/27
  */
 @Slf4j
 @Component
-public class AsyncBaseQueue {
+public class MessageHolderAsyncBaseQueue {
 
     @Autowired
     private ThreadPool threadPool;
