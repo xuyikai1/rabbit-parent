@@ -36,7 +36,7 @@ public class RabbitJobHandler {
     private static final int MAX_RETRY_COUNT = 3;
 
     @XxlJob("RabbitJobHandler")
-    public ReturnT<String> demoJobHandler(String param) throws Exception {
+    public ReturnT<String> rabbitJobHandler(String param) throws Exception {
         XxlJobLogger.log("XXL-JOB, Hello World.");
 
         Example example = new Example(BrokerMessage.class);

@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Author: Xuyk
- * @Description: 以api的形式 + postman 生产消息
+ * @Description: 以api的形式 + postman调用的方式 生产消息
  * @Date: 2020/6/30
  */
 @RestController
@@ -34,10 +34,14 @@ public class ProducerController {
     private String delayExchangeName;
 
     /**
-     * 消息ID
+     * 消息ID 暂用单机ID 可使用Redisson的AtomicInteger或者使用相关分布式ID生成策略
      */
     private AtomicInteger messageId = new AtomicInteger(200);
 
+    /**
+     * 发送可靠性消息demo
+     * @return
+     */
     @PostMapping("/produce")
     public String produceMessage(){
         String messageId = String.valueOf(this.messageId.incrementAndGet());
@@ -55,6 +59,10 @@ public class ProducerController {
         return "发送单条消息成功";
     }
 
+    /**
+     * 发送批量消息demo
+     * @return
+     */
     @PostMapping("/produceMessages")
     public String produceMessages(){
         List<Message> messages = new ArrayList<Message>();
@@ -77,6 +85,10 @@ public class ProducerController {
         return "发送批量消息成功";
     }
 
+    /**
+     * 发送延迟消息demo
+     * @return
+     */
     @PostMapping("/produceDelayMessage")
     public String produceDelayMessage(){
         String messageId = String.valueOf(this.messageId.incrementAndGet());

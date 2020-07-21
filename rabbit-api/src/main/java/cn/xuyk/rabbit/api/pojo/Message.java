@@ -38,9 +38,9 @@ public class Message implements Serializable {
     private Map<String, Object> attributes = new HashMap<>();
 
     /**
-     * 延迟消息的参数配置,消息的延迟时间
+     * 延迟消息的参数配置,消息的延迟时间 默认10秒
      */
-    private int delayMills;
+    private int delayMills = 10000;
 
     /**
      * 消息类型：默认为confirm消息类型

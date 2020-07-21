@@ -15,14 +15,13 @@ public class RabbitMessageConverter implements MessageConverter {
 
     private GenericMessageConverter delegate;
 
-//	private final String delaultExprie = String.valueOf(24 * 60 * 60 * 1000); 过期时间
-
     public RabbitMessageConverter(GenericMessageConverter genericMessageConverter) {
         Preconditions.checkNotNull(genericMessageConverter);
         this.delegate = genericMessageConverter;
     }
 
     /**
+     * cn.xuyk.rabbit.api.pojo.Message -> org.springframework.amqp.core.Message
      * @param object
      * @param messageProperties 可以在properties里增加一些附加属性set进
      * @return
@@ -30,12 +29,17 @@ public class RabbitMessageConverter implements MessageConverter {
      */
     @Override
     public Message toMessage(Object object, MessageProperties messageProperties) throws MessageConversionException {
-        // messageProperties.setExpiration(delaultExprie);
         cn.xuyk.rabbit.api.pojo.Message message = (cn.xuyk.rabbit.api.pojo.Message)object;
         messageProperties.setDelay(message.getDelayMills());
         return this.delegate.toMessage(object, messageProperties);
     }
 
+    /**
+     * org.springframework.amqp.core.Message -> cn.xuyk.rabbit.api.pojo.Message
+     * @param message
+     * @return
+     * @throws MessageConversionException
+     */
     @Override
     public Object fromMessage(Message message) throws MessageConversionException {
         cn.xuyk.rabbit.api.pojo.Message msg = (cn.xuyk.rabbit.api.pojo.Message) this.delegate.fromMessage(message);

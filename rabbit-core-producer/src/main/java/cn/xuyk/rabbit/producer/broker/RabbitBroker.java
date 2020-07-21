@@ -27,6 +27,9 @@ public interface RabbitBroker {
      */
     void reliantSend(Message message);
 
+    /**
+     * 批量发送消息
+     */
     void sendMessages();
 
 }

@@ -24,19 +24,40 @@ public class BrokerMessage implements Serializable {
 
     private static final long serialVersionUID = 7595620934559360495L;
 
+    /**
+     * 消息ID
+     */
     @Id
     private String messageId;
 
+    /**
+     * 消息体
+     */
     private String message;
 
+    /**
+     * 重试次数
+     */
     private Integer tryCount = 0;
 
+    /**
+     * 消息状态(0.发送中 1.发送成功 2.发送失败)
+     */
     private String status;
 
+    /**
+     * 下次尝试时间点
+     */
     private Date nextRetry;
 
+    /**
+     * 创建时间
+     */
     private Date createTime;
 
+    /**
+     * 更新时间
+     */
     private Date updateTime;
 
 }
